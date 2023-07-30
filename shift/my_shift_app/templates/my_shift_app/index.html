@@ -1,20 +1,28 @@
+<!DOCTYPE html>
+<html>
 <head>
-    <title>shift</title>
-</head>
-
+    <meta charset="utf-8">
+    <title>シフト作成</title>
 <body>
-    <table border="1">
+    <form method="POST">
+        {% csrf_token %}
+        <label for="year">Year:</label><br>
+        <input type="text" id="year" name="year"><br>
+        <label for="month">Month:</label><br>
+        <input type="text" id="month" name="month"><br>
+        <input type="submit" value="日にちを表示">
+    </form>
+    <table>
         <tr>
-            <th>日（曜日）</th>
-            <th>先生</th>
-            <th>生徒</th>
+          <th>Date</th>
+          <th>Weekday</th>
         </tr>
-        {% for x in list %}
-        <tr>
-            <td>{{x}}</td>
-            <td>10</td>
-            <td>15</td>
-        </tr>
+        {% for day, weekday in days_with_weekday %}
+          <tr>
+            <td>{{ day }}</td>
+            <td>{{ weekday }}</td>
+          </tr>
         {% endfor %}
-    </table>
+      </table>
 </body>
+</html>
