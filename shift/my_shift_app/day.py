@@ -1,5 +1,4 @@
 from calendar import monthcalendar
-import locale
 import calendar
 
 def get_days_with_weekday(year, month):

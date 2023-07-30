@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>シフト作成</title>
+<body>
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Weekday</th>
+    </tr>
+    {% for day, weekday in days_with_weekday %}
+    <tr>
+        <td>{{ day }}</td>
+        <td>{{ weekday }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<a href="{% url 'my_shift_app:index' %}">Back to index</a>
+</body>
+</html>

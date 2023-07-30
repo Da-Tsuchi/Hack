@@ -4,25 +4,10 @@
     <meta charset="utf-8">
     <title>シフト作成</title>
 <body>
-    <form method="POST">
+    <form method="post" target="_blank">
         {% csrf_token %}
-        <label for="year">Year:</label><br>
-        <input type="text" id="year" name="year"><br>
-        <label for="month">Month:</label><br>
-        <input type="text" id="month" name="month"><br>
-        <input type="submit" value="日にちを表示">
+        {{ form.as_p }}
+        <button type="submit">日にちを表示</button>
     </form>
-    <table>
-        <tr>
-          <th>Date</th>
-          <th>Weekday</th>
-        </tr>
-        {% for day, weekday in days_with_weekday %}
-          <tr>
-            <td>{{ day }}</td>
-            <td>{{ weekday }}</td>
-          </tr>
-        {% endfor %}
-      </table>
 </body>
 </html>
