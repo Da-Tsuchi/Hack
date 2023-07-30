@@ -2,4 +2,5 @@ from django.shortcuts import render
 
 # Create your views here.
 def index(request):
-    return render(request, 'my_shift_app/index.html')
+    context = {'list':["data1","data2"]}
+    return render(request, 'my_shift_app/index.html',context)
