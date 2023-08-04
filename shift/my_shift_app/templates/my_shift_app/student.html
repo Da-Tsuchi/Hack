@@ -1,0 +1,18 @@
+{% extends "my_shift_app/base_generic.html" %}
+
+{% block content %}
+<h1>生徒登録</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {{ form.errors }}
+    <button type="submit">登録</button>
+</form>
+
+<h1>生徒リスト</h1>
+<ul>
+{% for student in students %}
+    <li>{{ student.student_number }}: {{ student.name }} (Teacher: {{ student.teacher.teacher_number }})</li>
+{% endfor %}
+</ul>
+{% endblock %}

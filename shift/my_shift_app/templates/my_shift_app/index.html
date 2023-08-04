@@ -8,6 +8,11 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">日にちを表示</button>
+
+        {% block content %}
+        <!-- ログインボタン -->
+        <a href="{% url 'my_shift_app:login' %}" class="btn btn-primary">管理者としてログイン</a>
+        {% endblock %}
     </form>
 </body>
 </html>
