@@ -1,0 +1,40 @@
+{% extends "my_shift_app/base_generic.html" %}
+
+{% block content %}
+
+<h1>{{ year }}年{{ month }}月のシフト表</h1>
+<table>
+    <tr>
+        <th>日</th>
+        <th>曜日</th>
+        <th>講師</th>
+        <th>前半生徒</th>
+        <th>後半生徒</th>
+    </tr>
+    {% for day_with_weekday, firsts, seconds in days_with_weekday_student_first_second %}
+    {% with day=day_with_weekday.0 weekday=day_with_weekday.1 %}
+    <tr>
+        <td>{{ day }}</td>
+        <td>{{ weekday }}</td>
+        <td>
+            {{""}}
+        </td>
+        <td>
+            {% for first in firsts %}
+                {% if first.student %}
+                    {{ first.student.name }}
+                {% endif %}
+            {% endfor %}
+        </td>
+        <td>
+            {% for second in seconds %}
+                {% if second.student %}
+                    {{ second.student.name }}
+                {% endif %}
+            {% endfor %}
+        </td>
+    </tr>
+    {% endwith %}
+    {% endfor %}
+    </tr>
+{% endblock %}

@@ -8,6 +8,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
+from calendar import monthrange
 
 import csv
 
@@ -101,8 +102,72 @@ def student(request):
     return render(request, 'my_shift_app/student.html', {'form': form, 'students': students})
 
 @login_required
+def student_schedule(request):
+    # 生徒情報の登録処理...
+    if request.method == 'POST':
+        formFirst = StudentFirstScheduleForm(request.POST)
+        formSecond = StudentSecondScheduleForm(request.POST)
+        if formFirst.is_valid():
+            formFirst.save()
+            return redirect('my_shift_app:student_schedule')
+        if formSecond.is_valid():
+            formSecond.save()
+            return redirect('my_shift_app:student_schedule')
+    else:
+        formFirst = StudentFirstScheduleForm()
+        formSecond = StudentSecondScheduleForm()
+    students_first = StudentFirstSchedule.objects.all()
+    students_second = StudentSecondSchedule.objects.all()
+    return render(request, 'my_shift_app/student_schedule.html', {'formFirst': formFirst,"formSecond":formSecond, 'students_first': students_first,"students_second":students_second})
+
+@login_required
+def student_first_schedule(request):
+    # 生徒情報の登録処理...
+    if request.method == 'POST':
+        formFirst = StudentFirstScheduleForm(request.POST)
+        if formFirst.is_valid():
+            formFirst.save()
+            return redirect('my_shift_app:student_schedule')
+    else:
+        formFirst = StudentFirstScheduleForm()
+    students_first = StudentFirstSchedule.objects.all()
+    return render(request, 'my_shift_app/student_schedule.html', {'formFirst': formFirst,'students_first': students_first})
+
+@login_required
+def student_second_schedule(request):
+    # 生徒情報の登録処理...
+    if request.method == 'POST':
+        formSecond = StudentSecondScheduleForm(request.POST)
+        if formSecond.is_valid():
+            formSecond.save()
+            return redirect('my_shift_app:student_schedule')
+    else:
+        formSecond = StudentSecondScheduleForm()
+    students_second = StudentSecondSchedule.objects.all()
+    return render(request, 'my_shift_app/student_schedule.html', {"formSecond":formSecond, "students_second":students_second})
+
+@login_required
 def shift_manage(request):
-    # データベースから情報を取得し、セレクトボックスに表示...
-    teachers = Teacher.objects.all()
-    students = Student.objects.all()
-    return render(request, 'my_shift_app/shift_manage.html', {'teachers': teachers, 'students': students})
+    if request.method == 'POST':
+        form = MonthYearForm(request.POST)
+        if form.is_valid():
+            year = int(form.cleaned_data['year'])
+            month = int(form.cleaned_data['month'])
+            # shifts = [Shift(day=i+1) for i in range(num_days)]  # create a Shift instance for each day
+            days_with_weekday = get_days_with_weekday(year, month)
+
+            # 指定した年と月の日数を取得します
+            _, num_days = monthrange(year, month)
+
+            # 日にちごとのシフトをリストに格納します
+            student_first_schedule = [list(StudentFirstSchedule.objects.filter(year=year, month=month, day=i+1)) for i in range(num_days)]
+            student_second_schedule = [list(StudentSecondSchedule.objects.filter(year=year, month=month, day=i+1)) for i in range(num_days)]
+            print(student_first_schedule)
+            
+            days_with_weekday_student_first_second = zip(days_with_weekday, student_first_schedule, student_second_schedule)
+            
+            return render(request, 'my_shift_app/shift_table.html', {'year': year, 'month': month,"days_with_weekday":days_with_weekday,"student_first_schedule": student_first_schedule,
+        "student_second_schedule": student_second_schedule,"days_with_weekday_student_first_second":days_with_weekday_student_first_second})
+    else:
+        form = MonthYearForm()
+    return render(request, 'my_shift_app/shift_manage.html', {'form': form})

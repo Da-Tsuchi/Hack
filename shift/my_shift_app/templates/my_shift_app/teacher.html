@@ -9,9 +9,19 @@
 </form>
 
 <h1>講師リスト</h1>
-<ul>
-{% for teacher in teachers %}
-    <li>{{ teacher.teacher_number }}: {{ teacher.name }}</li>
-{% endfor %}
-</ul>
+    <table>
+        <tr>
+            <th>講師番号</th>
+            <th>講師名</th>
+        </tr>
+        
+        {% for teacher in teachers %}
+        <tr>
+        <td>{{ teacher.teacher_number }}</td>
+        <td>{{ teacher.name }}</td>
+        </tr>
+        {% endfor %}
+    </tr>
+    </table>
+
 {% endblock %}

@@ -1,0 +1,33 @@
+{% extends "my_shift_app/base_generic.html" %}
+
+{% block content %}
+<h1>前半生徒登録</h1>
+<form method="POST" action="{% url 'my_shift_app:student_first_schedule' %}">
+    {% csrf_token %}
+    {{ formFirst.as_table }}
+    {{ formFirst.errors }}
+    <button type="submit">登録</button>
+</form>
+
+<h1>前半生徒リスト</h1>
+<ul>
+{% for student in students_first %}
+    <li>{{ student.year }}: {{ student.month }}/{{ student.day }} {{student.student.student_number}}:{{student.student.name}}</li>
+{% endfor %}
+</ul>
+
+<h1>後半生徒登録</h1>
+<form method="POST" action="{% url 'my_shift_app:student_second_schedule' %}">
+    {% csrf_token %}
+    {{ formSecond.as_table }}
+    {{ formSecond.errors }}
+    <button type="submit">登録</button>
+</form>
+
+<h1>後半生徒リスト</h1>
+<ul>
+{% for student in students_second %}
+<li>{{ student.year }}: {{ student.month }}/{{ student.day }} {{student.student.student_number}}:{{student.student.name}}</li>
+{% endfor %}
+</ul>
+{% endblock %}

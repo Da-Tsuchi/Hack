@@ -4,7 +4,7 @@
 <h1>生徒登録</h1>
 <form method="POST">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.as_table }}
     {{ form.errors }}
     <button type="submit">登録</button>
 </form>
@@ -12,7 +12,7 @@
 <h1>生徒リスト</h1>
 <ul>
 {% for student in students %}
-    <li>{{ student.student_number }}: {{ student.name }} (Teacher: {{ student.teacher.teacher_number }})</li>
+    <li>{{ student.student_number }}: {{ student.name }} ({{ student.teacher.teacher_number }}:{{student.teacher.name}})</li>
 {% endfor %}
 </ul>
 {% endblock %}

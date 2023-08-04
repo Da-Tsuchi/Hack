@@ -1,5 +1,5 @@
 from django import forms
-from .models import Teacher, Student
+from .models import *
 
 # 年月を選択するフォーム
 class MonthYearForm(forms.Form):
@@ -24,3 +24,26 @@ class StudentForm(forms.ModelForm):
         if not Teacher.objects.filter(teacher_number=teacher.teacher_number).exists():
             raise forms.ValidationError("Selected teacher does not exist.")
         return teacher
+    
+class StudentFirstScheduleForm(forms.ModelForm):
+    class Meta:
+        model = StudentFirstSchedule
+        fields = ['year', 'month',"day","student"]  # フォームにteacher_numberフィールドを追加
+        
+class StudentSecondScheduleForm(forms.ModelForm):
+    class Meta:
+        model = StudentSecondSchedule
+        fields = ['year', 'month',"day","student"]  # フォームにteacher_numberフィールドを追加
+
+class ShiftForm(forms.Form):
+    day = forms.IntegerField()
+    student_first = forms.ChoiceField(widget=forms.Select)
+    student_second = forms.ChoiceField(widget=forms.Select)
+
+    def __init__(self, *args, **kwargs):
+        shifts_first = kwargs.pop('shifts_first')
+        shifts_second = kwargs.pop('shifts_second')
+        super(ShiftForm, self).__init__(*args, **kwargs)
+
+        self.fields['student_first'].choices = [(shift.student_first.id, shift.student_first.name) for shift in shifts_first]
+        self.fields['student_second'].choices = [(shift.student_second.id, shift.student_second.name) for shift in shifts_second]
