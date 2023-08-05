@@ -1,18 +1,18 @@
-from models import Teacher, Student, StudentFirstSchedule, StudentSecondSchedule, TeacherSchedule
+from .models import *
 
 def get_student_list(value_year, value_month, value_day):
-    student_list_first = StudentFirstSchedule.filter(year=f"{value_year}", month=f"{value_month}", day={value_day}).values_list('student_number', flat=True)
-    student_list_second = StudentSecondSchedule.filter(year=f"{value_year}", month=f"{value_month}", day={value_day}).values_list('student_number', flat=True)
+    student_list_first = StudentFirstSchedule.objects.filter(year=value_year, month=value_month, day=value_day).values_list('student', flat=True)
+    student_list_second = StudentSecondSchedule.objects.filter(year=value_year, month=value_month, day=value_day).values_list('student', flat=True)
     student_list = list(student_list_first) + list(student_list_second)
     return student_list
 
 def get_student_teacher_list(year, month, day):
     student_list = get_student_list(year, month, day)
-    student_teacher_list = Student.filter(student_number__in=student_list).values_list('teacher_number', flat=True)
+    student_teacher_list = Student.objects.filter(student_number__in=student_list).values_list('teacher', flat=True)
     return student_teacher_list
 
 def get_teacher_list(value_year, value_month, value_day):
-    teacher_list = TeacherSchedule.filter(year=f"{value_year}", month=f"{value_month}", day={value_day}).values_list('teacher_number', flat=True)
+    teacher_list = list(TeacherSchedule.objects.filter(year=value_year, month=value_month, day=value_day).values_list('teacher', flat=True))
     return teacher_list
 
 

@@ -13,17 +13,16 @@ class TeacherForm(forms.ModelForm):
         model = Teacher
         fields = ['teacher_number', 'name']  # フォームにteacher_numberフィールドを追加
 
+class TeacherNameChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.name
+
 class StudentForm(forms.ModelForm):
-    teacher = forms.ModelChoiceField(queryset=Teacher.objects.all(), to_field_name="teacher_number")
+    teacher = TeacherNameChoiceField(queryset=Teacher.objects.all(), to_field_name="teacher_number")
+
     class Meta:
         model = Student
         fields = ['student_number', 'name', 'teacher']
-        
-    def clean_teacher(self):
-        teacher = self.cleaned_data.get('teacher')
-        if not Teacher.objects.filter(teacher_number=teacher.teacher_number).exists():
-            raise forms.ValidationError("Selected teacher does not exist.")
-        return teacher
     
 class StudentFirstScheduleForm(forms.ModelForm):
     year = forms.IntegerField()
