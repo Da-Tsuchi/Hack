@@ -1,4 +1,5 @@
 {% extends "my_shift_app/base_generic.html" %}
+{% load dict_helper %}
 
 {% block content %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -14,26 +15,35 @@
             <th>後半生徒</th>
         </tr>
 
-        {% for day,weekday,teacher_request,student_first,student_second in schedule %}
+        {% for day,weekday,matched_teachers,unmatched_teachers,student_first,student_second in schedule %}
         <tr>
             <td>{{ day }}</td>
             <td>{{ weekday }}</td>
             <td class="selectContainer">
                 <select name="teacher_{{ day }}[]" class="selectClass">
-                    <option value="">先生なし</option>
-                    {% for teacher_number in teacher_request %}
+                    {% for teacher_req in matched_teachers %}
                         {% for teacher in teachers %}
-                            {% if teacher.teacher_number == teacher_number %}
-                                {{teacher.name }}
+                            {% if teacher.teacher_number == teacher_req %}
+                                <option value="{{ teacher.teacher_number }}">{{ teacher.name }}</option>
                             {% endif %}
                         {% endfor %}
                     {% endfor %}
-                    <option value="{{ teacher.teacher_number }}">{{ teacher.name }}</option>
+
+                    {% for teacher_req in unmatched_teachers %}
+                        {% for teacher in teachers %}
+                            {% if teacher.teacher_number == teacher_req %}
+                                <option value="{{ teacher.teacher_number }}">{{ teacher.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+
+                    <option value="">先生なし</option>
                 </select>
                 <div class="buttons">
                     <button class="addButton">追加</button>
                     <button class="deleteButton">削除</button>
                 </div>
+                
             </td>
             <td>
                 {% for student_number in student_first %}
@@ -56,7 +66,7 @@
         </tr>
         {% endfor %}
     </table>
-    <input type="submit" value="保存">
+    <input type="submit" value="確認画面へ">
 </form>
 
 <script>
