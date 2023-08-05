@@ -26,13 +26,23 @@ class StudentForm(forms.ModelForm):
         return teacher
     
 class StudentFirstScheduleForm(forms.ModelForm):
+    year = forms.IntegerField()
+    month = forms.IntegerField()
+    day = forms.IntegerField()
+    student = forms.ModelChoiceField(queryset=Student.objects.all())
+    
     class Meta:
         model = StudentFirstSchedule
         fields = ['year', 'month',"day","student"]  # フォームにteacher_numberフィールドを追加
         
 class StudentSecondScheduleForm(forms.ModelForm):
+    year = forms.IntegerField()
+    month = forms.IntegerField()
+    day = forms.IntegerField()
+    student = forms.ModelChoiceField(queryset=Student.objects.all())
+    
     class Meta:
-        model = StudentSecondSchedule
+        model = StudentFirstSchedule
         fields = ['year', 'month',"day","student"]  # フォームにteacher_numberフィールドを追加
 
 class ShiftForm(forms.Form):

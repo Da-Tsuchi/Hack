@@ -7,34 +7,73 @@
     <tr>
         <th>日</th>
         <th>曜日</th>
-        <th>講師</th>
         <th>前半生徒</th>
         <th>後半生徒</th>
     </tr>
-    {% for day_with_weekday, firsts, seconds in days_with_weekday_student_first_second %}
-    {% with day=day_with_weekday.0 weekday=day_with_weekday.1 %}
+    
+    {% for day, weekday in days_with_weekday %}
     <tr>
+        
         <td>{{ day }}</td>
         <td>{{ weekday }}</td>
         <td>
-            {{""}}
+            <select>
+                <option value="">生徒なし</option>
+                {% for student in students %}
+                <option value="{{ student.number }}">{{ student.name }}</option>
+                {% endfor %}
+            </select>
+            <div id="container">
+                <button id="add_select">追加</button>
+            </div>
+            <script>
+                document.getElementById('add_select').addEventListener('click', function() {
+                    var container = document.getElementById('container');
+                    var selectContainer = document.createElement('div');
+                    var select = document.createElement('select');
+                
+                    // Djangoから取得したデータをJavaScriptの配列に変換
+                    let students = JSON.parse('{{students|escapejs}}');
+                
+                    // デフォルトオプションの作成
+                    var defaultOption = document.createElement('option');
+                    defaultOption.text = '生徒なし';
+                    defaultOption.value = '';
+                    select.appendChild(defaultOption);
+                
+                    // 各生徒についてのオプションを作成
+                    students.forEach(function(student) {
+                        var option = document.createElement('option');
+                        option.text = student.fields.name;
+                        option.value = student.pk;  // Djangoのモデルインスタンスの主キー
+                        select.appendChild(option);
+                    });
+                
+                    // 削除ボタンの作成
+                    var removeButton = document.createElement('button');
+                    removeButton.textContent = '削除';
+                    removeButton.addEventListener('click', function() {
+                        // selectContainerを削除
+                        container.removeChild(selectContainer);
+                    });
+                
+                    // selectと削除ボタンをselectContainerに追加
+                    selectContainer.appendChild(select);
+                    selectContainer.appendChild(removeButton);
+                
+                    // コンテナに新しいプルダウンリストと削除ボタンを追加
+                    container.appendChild(selectContainer);
+                });
+                
+                </script>
+            
         </td>
-        <td>
-            {% for first in firsts %}
-                {% if first.student %}
-                    {{ first.student.name }}
-                {% endif %}
-            {% endfor %}
-        </td>
-        <td>
-            {% for second in seconds %}
-                {% if second.student %}
-                    {{ second.student.name }}
-                {% endif %}
-            {% endfor %}
-        </td>
+        
+
     </tr>
-    {% endwith %}
     {% endfor %}
+    
     </tr>
+</table>
+<button type="submit">Submit</button>
 {% endblock %}

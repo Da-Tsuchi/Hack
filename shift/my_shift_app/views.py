@@ -155,19 +155,36 @@ def shift_manage(request):
             month = int(form.cleaned_data['month'])
             # shifts = [Shift(day=i+1) for i in range(num_days)]  # create a Shift instance for each day
             days_with_weekday = get_days_with_weekday(year, month)
+            students = Student.objects.all()
+            
 
             # 指定した年と月の日数を取得します
             _, num_days = monthrange(year, month)
-
-            # 日にちごとのシフトをリストに格納します
-            student_first_schedule = [list(StudentFirstSchedule.objects.filter(year=year, month=month, day=i+1)) for i in range(num_days)]
-            student_second_schedule = [list(StudentSecondSchedule.objects.filter(year=year, month=month, day=i+1)) for i in range(num_days)]
-            print(student_first_schedule)
             
-            days_with_weekday_student_first_second = zip(days_with_weekday, student_first_schedule, student_second_schedule)
-            
-            return render(request, 'my_shift_app/shift_table.html', {'year': year, 'month': month,"days_with_weekday":days_with_weekday,"student_first_schedule": student_first_schedule,
-        "student_second_schedule": student_second_schedule,"days_with_weekday_student_first_second":days_with_weekday_student_first_second})
+            return render(request, 'my_shift_app/shift_table.html', {'year': year, 'month': month,"days_with_weekday":days_with_weekday,"students":students})
     else:
         form = MonthYearForm()
     return render(request, 'my_shift_app/shift_manage.html', {'form': form})
+
+@login_required
+def shift_view(request):
+    if request.method == 'POST':
+        year = request.session.get('year')
+        month = request.session.get('month')
+        student_numbers = request.POST.getlist('student')
+        days_with_weekday = get_days_with_weekday(year, month)
+
+        for day, student_number in zip(days_with_weekday, student_numbers):
+            if student_number:  # 学生が選択されている場合のみデータを保存
+                student = Student.objects.get(student_number=student_number)
+
+                # StudentFirstScheduleとStudentSecondScheduleにデータを保存
+                StudentFirstSchedule.objects.create(year =year,month=month,day =day, student=student)
+                StudentSecondSchedule.objects.create(year =year,month=month,day =day, student=student)
+
+        return redirect('schift_view_student')  # データ保存後、スケジュールページにリダイレクト
+
+    else:
+        students = Student.objects.all()
+        dates = [date for date in generate_dates()]  # generate_datesは適切な日付を生成する関数
+        return render(request, 'my_shift_app/schift_view.html', {'students': students})
