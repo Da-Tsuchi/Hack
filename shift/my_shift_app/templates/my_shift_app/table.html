@@ -3,26 +3,38 @@
 <head>
     <meta charset="utf-8">
     <title>シフト作成</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'my_shift_app/table_style.css' %}">
 </head>
-<style media="screen">
- 
-    td {
-      width: 100px;
-      height: 20px;
-      text-align: center;
-    }
- 
-  </style>
+
 <body>
     <h1>{{year}}年 {{month}}月のシフト計画</h1>
+
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class = teacher_number>
+            <label for="{{ form.teacher_number.id_for_label }}">
+                    講師<br>
+                    {{ form.name }}
+            </label>
+            <br>
+        </div>
+    </form>
+
+    <!-- <select name="teacher" id="teacher{{ forloop.counter }}">
+        <option value="">講師を選択してください</option>
+        {% for teacher in teachers %}
+            <option value="{{ teacher.teacher_number }}">{{ teacher.name }}</option>
+        {% endfor %}
+    </select> -->
 <table>
     <tr>
         <th>日にち</th>
         <th>曜日</th>
         <th>講師</th>
-        <th>生徒(前半)</th>
-        <th>生徒(後半)</th>
     </tr>
+
     {% for day, weekday in days_with_weekday %}
     <tr>
         <td>{{ day }}</td>
@@ -31,72 +43,13 @@
             <div id="teacher_container{{ forloop.counter }}">
                 <!-- Here the select boxes will be appended -->
             </div>
-            <button class="addTeacher" id="addTeacher{{ forloop.counter }}">講師追加</button>
-        </td>
-        <td>
-            <div id="student_first_container{{ forloop.counter }}">
-                <!-- Here the select boxes will be appended -->
-            </div>
-            <button class="addFirstStudent" id="addFirstStudent{{ forloop.counter }}">生徒追加</button>
-        </td>
-        <td>
-            <div id="student_second_container{{ forloop.counter }}">
-                <!-- Here the select boxes will be appended -->
-            </div>
-            <button class="addSecondStudent" id="addSecondStudent{{ forloop.counter }}">生徒追加</button>
+            <input type="radio" id="OK" name="{{ day }}_shift" value="OK" checked>出勤可
+            <input type="radio" id="NO" name="{{ day }}_shift" value="NO">出勤不可
+            <!-- <button class="addTeacher" id="addTeacher{{ forloop.counter }}">講師追加</button> -->
         </td>
     </tr>
     {% endfor %}
 </table>
 <a href="{% url 'my_shift_app:index' %}">年月選択画面に戻る</a>
-        <script>
-            // Djangoから取得したデータをJavaScriptの配列に変換
-            let teachers = {{teachers|safe}};
-            let students = {{students|safe}};
-            let teacherButtons = document.querySelectorAll('button[id^="addTeacher"]');
-            for(let i=0; i<teacherButtons.length; i++){
-                teacherButtons[i].addEventListener("click", function(){
-                    createSelectBox("teacher_container" + (i+1), teachers);
-                });
-            }
-
-            let studentFirstButtons = document.querySelectorAll('button[id^="addFirstStudent"]');
-            for(let i=0; i<studentFirstButtons.length; i++){
-                studentFirstButtons[i].addEventListener("click", function(){
-                    createSelectBox("student_first_container" + (i+1), students);
-                });
-            }
-
-            let studentSecondButtons = document.querySelectorAll('button[id^="addSecondStudent"]');
-            for(let i=0; i<studentSecondButtons.length; i++){
-                studentSecondButtons[i].addEventListener("click", function(){
-                    createSelectBox("student_second_container" + (i+1),students);
-                });
-            }
-
-            function createSelectBox(containerId, options) {
-                var container = document.getElementById(containerId);
-                var select = document.createElement("select");
-                var removeBtn = document.createElement("button");
-                removeBtn.textContent = "削除";
-
-                options.forEach(function(optionText) {
-                    var option = document.createElement("option");
-                    option.value = optionText;
-                    option.text = optionText;
-                    select.appendChild(option);
-                });
-
-                // Append the select box and the remove button to the container
-                container.appendChild(select);
-                container.appendChild(removeBtn);
-
-                // Remove the select box and the remove button when the remove button is clicked
-                removeBtn.addEventListener("click", function() {
-                    container.removeChild(select);
-                    container.removeChild(removeBtn);
-                });
-            }
-        </script>
 </body>
 </html>

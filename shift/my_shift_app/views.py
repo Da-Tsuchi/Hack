@@ -34,13 +34,22 @@ def index(request):
 def table(request):
     year = request.session.get('year')
     month = request.session.get('month')
-    # 他のコード
-    teachers = list(Teacher.objects.values_list('name', flat=True))
-    students = list(Student.objects.values_list('name', flat=True))
+    if request.method == 'POST':
+        form = TeacherForm(request.POST)
+        if form.is_valid():
+            selected_teacher = form.cleaned_data['teacher']
+            # 他の処理
+    else:
+        form = TeacherForm()
+
+    teachers = Teacher.objects.all()
+
+    # teachers = list(Teacher.objects.values_list('name', flat=True))
+    # students = list(Student.objects.values_list('name', flat=True))
                     
     # If the year and month data is in session
     days_with_weekday = get_days_with_weekday(year, month)
-    return render(request, 'my_shift_app/table.html', {'days_with_weekday': days_with_weekday,"year":year,"month":month,"teachers":teachers,"students":students})
+    return render(request, 'my_shift_app/table.html', {'days_with_weekday': days_with_weekday,"year":year,"month":month, 'form': form, 'teachers': teachers})
 
 
 def Login(request):
