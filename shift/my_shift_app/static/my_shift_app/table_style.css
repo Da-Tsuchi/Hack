@@ -2,34 +2,6 @@ body{
     text-align: center;
 }
 
-.student_number{
-    font-size: 20px;
-    height: 50px;
-    padding-bottom:20px;
-}
-
-.student{
-    font-size: 20px;
-    height: 50px;
-    padding-bottom:20px;
-}
-
-.student_number input{
-    height: 50%;
-    width : 15%;
-    background-color: #e6edf3;
-    border-radius: 10px;
-    border: 2px solid #2589d0;
-}
-
-.student input{
-    height: 50%;
-    width : 15%;
-    background-color: #e6edf3;
-    border-radius: 10px;
-    border: 2px solid #2589d0;
-}
-
 .teacher{
     margin:0 auto;
     margin-bottom: 20px;
@@ -83,13 +55,6 @@ body{
     outline: 2px solid #2589d0;
 }
 
-.btn-submit{
-    font-size: 20px;
-    width: 10%;
-    background-color:#e6edf3;
-    border-radius: 10px;
-}
-
 table{
     margin: 0 auto;
     width: 50%;
@@ -134,4 +99,12 @@ table td:last-child{
 
 table tr:last-child td:first-child {
     border-radius: 0 0 0 5px;
+}
+
+.saturday{
+    background-color: rgb(175, 238, 238);
+}
+
+.sunday{
+    background-color:rgb(255, 99, 71);
 }

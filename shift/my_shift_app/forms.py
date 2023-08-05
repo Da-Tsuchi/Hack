@@ -8,14 +8,18 @@ class MonthYearForm(forms.Form):
     year = forms.ChoiceField(choices=YEARS)
     month = forms.ChoiceField(choices=MONTHS)
     
-class TeacherForm(forms.ModelForm):
-    class Meta:
-        model = Teacher
-        fields = ['teacher_number', 'name']  # フォームにteacher_numberフィールドを追加
-
 class TeacherNameChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.name
+
+class TeacherForm(forms.ModelForm):
+    teacher_name = TeacherNameChoiceField(queryset=Teacher.objects.all(), to_field_name="teacher_number")
+
+    class Meta:
+        model = Teacher
+        fields = ['teacher_number', 'name', 'teacher_name']  # フォームにteacher_numberフィールドを追加
+
+
 
 class StudentForm(forms.ModelForm):
     teacher = TeacherNameChoiceField(queryset=Teacher.objects.all(), to_field_name="teacher_number")
