@@ -151,40 +151,83 @@ def shift_manage(request):
     if request.method == 'POST':
         form = MonthYearForm(request.POST)
         if form.is_valid():
+            
             year = int(form.cleaned_data['year'])
             month = int(form.cleaned_data['month'])
             # shifts = [Shift(day=i+1) for i in range(num_days)]  # create a Shift instance for each day
-            days_with_weekday = get_days_with_weekday(year, month)
-            students = Student.objects.all()
+            request.session['year'] = year
+            request.session['month'] = month
             
-
+            students = Student.objects.all()
             # 指定した年と月の日数を取得します
             _, num_days = monthrange(year, month)
             
-            return render(request, 'my_shift_app/shift_table.html', {'year': year, 'month': month,"days_with_weekday":days_with_weekday,"students":students})
+            return redirect('my_shift_app:shift_table')
+            # return render(request, 'my_shift_app/shift_table.html', {'year': year, 'month': month,"days_with_weekday":days_with_weekday,"students":students})
     else:
         form = MonthYearForm()
     return render(request, 'my_shift_app/shift_manage.html', {'form': form})
 
 @login_required
-def shift_view(request):
+def shift_table(request):
+    
+    year = request.session.get('year')
+    month = request.session.get('month')
+    students = Student.objects.all()
+
+    days_with_weekday = get_days_with_weekday(year, month)
     if request.method == 'POST':
-        year = request.session.get('year')
-        month = request.session.get('month')
-        student_numbers = request.POST.getlist('student')
-        days_with_weekday = get_days_with_weekday(year, month)
+        for key, values in request.POST.lists():
+            if key.startswith('student_first_'):
+                day = key.replace('student_first_', '').replace('[]', '')
+                if len(values) != len(set(values)):
+                    return HttpResponse('同じ生徒を同じ日に複数回選ぶことはできません。', status=400)
+                for value in values:
+                    student_number = value
+                    if student_number:
+                        student = Student.objects.get(student_number=student_number)
+                        schedule = StudentFirstSchedule(year =year,month=month,day =day, student=student)
+                        schedule.save()
+            if key.startswith('student_second_'):
+                day = key.replace('student_second_', '').replace('[]', '')
+                if len(values) != len(set(values)):
+                    return HttpResponse('同じ生徒を同じ日に複数回選ぶことはできません。', status=400)
+                for value in values:
+                    student_number = value
+                    if student_number:
+                        student = Student.objects.get(student_number=student_number)
+                        schedule = StudentSecondSchedule(year =year,month=month,day =day, student=student)
+                        schedule.save()
+        return redirect('my_shift_app:shift_teacher')
+        # return render(request, 'my_shift_app/shift_teacher.html', {'year': year, 'month': month,"days_with_weekday":days_with_weekday,"students":students})  # データ保存後、スケジュールページにリダイレクト 
+    
+    return render(request, 'my_shift_app/shift_table.html', {'year': year, 'month': month,"days_with_weekday":days_with_weekday,"students":students})  # データ保存後、スケジュールページにリダイレクト
+    
+@login_required
+def shift_teacher(request):
+    year = request.session.get('year')
+    month = request.session.get('month')
+    students = Student.objects.all()
+    student_first_schedule = StudentFirstSchedule.objects.all()
+    student_second_schedule = StudentSecondSchedule.objects.all()
+    days_with_weekday = get_days_with_weekday(year, month)
+    schedules = {}
+    
+    # 前半生徒と後半生徒の日付けごとのリスト取得
+    for day in range(1, calendar.monthrange(int(year), int(month))[1] + 1):
+        schedules[day] = {
+            'first': StudentFirstSchedule.objects.filter(year=year, month=month, day=day).values_list('student', flat=True).all(),
+            'second': StudentSecondSchedule.objects.filter(year=year, month=month, day=day).values_list('student', flat=True).all()
+        }
+        print(schedules[day]["first"])
+        
+    context = {
+            'year': year,
+            'month': month,
+            "days_with_weekday":days_with_weekday,
+            "students":students,
+            "schedules": schedules,
+        # 他のコンテキスト変数
+    }
 
-        for day, student_number in zip(days_with_weekday, student_numbers):
-            if student_number:  # 学生が選択されている場合のみデータを保存
-                student = Student.objects.get(student_number=student_number)
-
-                # StudentFirstScheduleとStudentSecondScheduleにデータを保存
-                StudentFirstSchedule.objects.create(year =year,month=month,day =day, student=student)
-                StudentSecondSchedule.objects.create(year =year,month=month,day =day, student=student)
-
-        return redirect('schift_view_student')  # データ保存後、スケジュールページにリダイレクト
-
-    else:
-        students = Student.objects.all()
-        dates = [date for date in generate_dates()]  # generate_datesは適切な日付を生成する関数
-        return render(request, 'my_shift_app/schift_view.html', {'students': students})
+    return render(request, 'my_shift_app/shift_teacher.html', context)  # データ保存後、スケジュールページにリダイレクト
