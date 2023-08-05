@@ -1,79 +1,84 @@
 {% extends "my_shift_app/base_generic.html" %}
 
 {% block content %}
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <h1>{{ year }}年{{ month }}月のシフト表</h1>
-<table>
-    <tr>
-        <th>日</th>
-        <th>曜日</th>
-        <th>前半生徒</th>
-        <th>後半生徒</th>
-    </tr>
-    
-    {% for day, weekday in days_with_weekday %}
-    <tr>
-        
-        <td>{{ day }}</td>
-        <td>{{ weekday }}</td>
-        <td>
-            <select>
-                <option value="">生徒なし</option>
-                {% for student in students %}
-                <option value="{{ student.number }}">{{ student.name }}</option>
-                {% endfor %}
-            </select>
-            <div id="container">
-                <button id="add_select">追加</button>
-            </div>
-            <script>
-                document.getElementById('add_select').addEventListener('click', function() {
-                    var container = document.getElementById('container');
-                    var selectContainer = document.createElement('div');
-                    var select = document.createElement('select');
-                
-                    // Djangoから取得したデータをJavaScriptの配列に変換
-                    let students = JSON.parse('{{students|escapejs}}');
-                
-                    // デフォルトオプションの作成
-                    var defaultOption = document.createElement('option');
-                    defaultOption.text = '生徒なし';
-                    defaultOption.value = '';
-                    select.appendChild(defaultOption);
-                
-                    // 各生徒についてのオプションを作成
-                    students.forEach(function(student) {
-                        var option = document.createElement('option');
-                        option.text = student.fields.name;
-                        option.value = student.pk;  // Djangoのモデルインスタンスの主キー
-                        select.appendChild(option);
-                    });
-                
-                    // 削除ボタンの作成
-                    var removeButton = document.createElement('button');
-                    removeButton.textContent = '削除';
-                    removeButton.addEventListener('click', function() {
-                        // selectContainerを削除
-                        container.removeChild(selectContainer);
-                    });
-                
-                    // selectと削除ボタンをselectContainerに追加
-                    selectContainer.appendChild(select);
-                    selectContainer.appendChild(removeButton);
-                
-                    // コンテナに新しいプルダウンリストと削除ボタンを追加
-                    container.appendChild(selectContainer);
-                });
-                
-                </script>
-            
-        </td>
-        
+<form action ="" method="POST" id="shiftForm">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <th>日</th>
+            <th>曜日</th>
+            <th>前半生徒</th>
+            <th>後半生徒</th>
+        </tr>
 
-    </tr>
-    {% endfor %}
+        {% for day, weekday in days_with_weekday %}
+        <tr>
+            <td>{{ day }}</td>
+            <td>{{ weekday }}</td>
+            <td class="selectContainer">
+                <select name="student_first_{{ day }}[]" class="selectClass">
+                    <option value="">生徒なし</option>
+                    {% for student in students %}
+                    <option value="{{ student.student_number }}">{{ student.name }}</option>
+                    {% endfor %}
+                </select>
+                <div class="buttons">
+                    <button class="addButton">追加</button>
+                    <button class="deleteButton">削除</button>
+                </div>
+            </td>
+            <td class="selectContainer">
+                <select name="student_second_{{ day }}[]" class="selectClass">
+                    <option value="">生徒なし</option>
+                    {% for student in students %}
+                    <option value="{{ student.student_number }}">{{ student.name }}</option>
+                    {% endfor %}
+                </select>
+                <div class="buttons">
+                    <button class="addButton">追加</button>
+                    <button class="deleteButton">削除</button>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <input type="submit" value="保存">
+</form>
+
+<script>
+    $(document).ready(function() {
+        $('.selectClass').on('change', function() {
+            var selectedStudent = $(this).val();
+            var selects = $(this).parent('.selectContainer').find('.selectClass');
+            selects.each(function() {
+                if ($(this).val() == selectedStudent && this !== event.target) {
+                    alert('同じ生徒を同じ日に複数回選ぶことはできません。');
+                    $(event.target).val(''); // Reset the select value
+                }
+            });
+        });
+
+        // 追加ボタンがクリックされたときのイベント
+        $('.addButton').on('click', function(e) {
+            e.preventDefault();
+            var parent = $(this).closest('.selectContainer');
+            var select = parent.find('.selectClass').first().clone();
+            select.val('');  // クローンした選択ボックスの値をクリア
+            parent.find(".buttons").before(select);
+        });
     
-    </tr>
-</table>
-<button type="submit">Submit</button>
+        // 削除ボタンがクリックされたときのイベント
+        $('.deleteButton').on('click', function(e) {
+            e.preventDefault();
+            var parent = $(this).closest('.selectContainer');
+            var selects = parent.find('.selectClass');
+            if (selects.length > 1) {  // 少なくとも1つの選択ボックスが残るように
+                selects.last().remove();
+            }
+        });
+    });
+</script>
+
 {% endblock %}

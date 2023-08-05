@@ -1,0 +1,39 @@
+{% extends "my_shift_app/base_generic.html" %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<h1>{{ year }}年{{ month }}月のシフト表</h1>
+<form action ="" method="POST">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <th>日</th>
+            <th>曜日</th>
+            <th>講師</th>
+            <th>前半生徒</th>
+            <th>後半生徒</th>
+        </tr>
+
+        {% for day, weekday in days_with_weekday %}
+        <tr>
+            <td>{{ day }}</td>
+            <td>{{ weekday }}</td>
+            <td>
+                
+            </td>
+            <td>
+                {% for schedule in schedules.day.first %}
+                    {{ students.student_number }} {% if students.student_number == schedule %}selected{% endif %}>{{ students.name }}
+                {% endfor %}
+            </td>
+            <td>
+                {% for schedule in schedules.day.second %}
+                    {{ students.student_number }} {% if students.student_number == schedule %}selected{% endif %}>{{ students.name }}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <input type="submit" value="保存">
+</form>
+{% endblock %}
