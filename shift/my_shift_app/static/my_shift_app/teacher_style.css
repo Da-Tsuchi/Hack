@@ -1,0 +1,89 @@
+h1{
+    text-align: center;
+}
+body{
+    text-align: center;
+}
+
+.teacher_number{
+    font-size: 20px;
+    height: 50px;
+    padding-bottom:20px;
+}
+
+.teacher{
+    font-size: 20px;
+    height: 50px;
+    padding-bottom:30px;
+}
+
+.teacher_number input{
+    height: 50%;
+    width : 15%;
+    background-color: #e6edf3;
+    border-radius: 10px;
+    border: 2px solid #2589d0;
+}
+
+.teacher input{
+    height: 50%;
+    width : 15%;
+    background-color: #e6edf3;
+    border-radius: 10px;
+    border: 2px solid #2589d0;
+}
+
+
+
+.btn-submit{
+    font-size: 20px;
+    width: 10%;
+    background-color:#e6edf3;
+    border-radius: 10px;
+}
+
+table{
+    margin: 0 auto;
+    width: 50%;
+    border-collapse:separate;
+    border-spacing: 0;
+}
+
+table th:first-child{
+    border-radius: 5px 0 0 0;
+}
+
+table th:last-child{
+    border-radius: 0 5px 0 0;
+    border-right: 1px solid #3c6690;
+}
+
+table th{
+    text-align: center;
+    color:white;
+    background: linear-gradient(#829ebc,#225588);
+    border-left: 1px solid #3c6690;
+    border-top: 1px solid #3c6690;
+    border-bottom: 1px solid #3c6690;
+    box-shadow: 0px 1px 1px rgba(255,255,255,0.3) inset;
+    width: 25%;
+    padding: 10px 0;
+}
+
+table td{
+    text-align: center;
+    border-left: 1px solid #a8b7c5;
+    border-bottom: 1px solid #a8b7c5;
+    border-top:none;
+    box-shadow: 0px -3px 5px 1px #eee inset;
+    width: 25%;
+    padding: 10px 0;
+}
+
+table td:last-child{
+    border-right: 1px solid #a8b7c5;
+}
+
+table tr:last-child td:first-child {
+    border-radius: 0 0 0 5px;
+}

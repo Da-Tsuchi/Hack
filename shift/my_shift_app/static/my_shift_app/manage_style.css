@@ -1,0 +1,10 @@
+h2{
+    text-align: center;
+}
+a{
+    display: block;
+    border-bottom: 1px solid #ddd;
+    margin: 10px 20px 10px 20px;
+    font-size: 20px;
+    padding-left: 10px;
+}

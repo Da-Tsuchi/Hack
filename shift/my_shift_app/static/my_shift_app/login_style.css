@@ -1,10 +1,39 @@
 body{
     text-align: center;
 }
-h1{
-    text-align: center;
-    font-size: 50px;
-    color: #000000;
-    margin-top: 100px;
-    margin-bottom: 100px;
+
+.user{
+    font-size: 20px;
+    height: 50px;
+    padding-bottom:20px;
+}
+
+.pass{
+    font-size: 20px;
+    height: 50px;
+    padding-bottom:30px;
+}
+
+.userid{
+    height: 50%;
+    width : 15%;
+    background-color: #e6edf3;
+    border-radius: 10px;
+    border: 2px solid #2589d0;
+}
+
+.password{
+    height: 50%;
+    width : 15%;
+    background-color: #e6edf3;
+    border-radius: 10px;
+    border: 2px solid #2589d0;
+}
+
+.btn{
+    font-size: 20px;
+    width: 10%;
+    background-color:#e6edf3;
+    border-radius: 10px;
+    /* border: 2px solid #2589d0; */
 }

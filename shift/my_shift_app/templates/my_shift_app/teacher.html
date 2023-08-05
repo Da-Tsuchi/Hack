@@ -1,27 +1,48 @@
-{% extends "my_shift_app/base_generic.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>シフト作成</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'my_shift_app/teacher_style.css' %}">
+</head>
+    <body>
+        {% block content %}
+        <h1>講師登録</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <div class = teacher_number>
+                <label for="{{ form.teacher_number.id_for_label }}">
+                        講師番号<br>
+                        {{ form.teacher_number }}
+                </label>
+                <br>
+            </div>
 
-{% block content %}
-<h1>講師登録</h1>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">登録</button>
-</form>
+            <div class = teacher>
+                <label for="{{ form.name.id_for_label }}">
+                        講師名<br>
+                        {{ form.name }}
+                </label>
+                <br>
+            </div>
+            <button type="submit" class="btn-submit">登録</button>
+        </form>
 
-<h1>講師リスト</h1>
-    <table>
-        <tr>
-            <th>講師番号</th>
-            <th>講師名</th>
-        </tr>
-        
-        {% for teacher in teachers %}
-        <tr>
-        <td>{{ teacher.teacher_number }}</td>
-        <td>{{ teacher.name }}</td>
-        </tr>
-        {% endfor %}
-    </tr>
-    </table>
-
-{% endblock %}
+        <h1>講師リスト</h1>
+            <table>
+                <tr>
+                        <th>講師番号</th>
+                        <th>講師名</th>
+                </tr>
+                
+                {% for teacher in teachers %}
+                <tr>
+                    <td>{{ teacher.teacher_number }}</td>
+                    <td>{{ teacher.name }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endblock %}
+    </body>
+</html>

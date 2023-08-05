@@ -1,0 +1,138 @@
+body{
+    text-align: center;
+}
+
+.student_number{
+    font-size: 20px;
+    height: 50px;
+    padding-bottom:20px;
+}
+
+.student{
+    font-size: 20px;
+    height: 50px;
+    padding-bottom:20px;
+}
+
+.student_number input{
+    height: 50%;
+    width : 15%;
+    background-color: #e6edf3;
+    border-radius: 10px;
+    border: 2px solid #2589d0;
+}
+
+.student input{
+    height: 50%;
+    width : 15%;
+    background-color: #e6edf3;
+    border-radius: 10px;
+    border: 2px solid #2589d0;
+}
+
+.teacher{
+    margin:0 auto;
+    margin-bottom: 20px;
+    width: 20%;
+}
+
+.teacher label{
+    position: relative;
+    width: 20%;
+}
+
+.teacher label  ::before {
+    position: absolute;
+    content: '';
+    pointer-events: none;
+    display: inline-block;
+    right: 0;
+    width: 2.8em;
+    height: 2.8em;
+    border-radius: 0 3px 3px 0;
+    background-color: #2589d0;
+}
+.teacher label ::after {
+    position: absolute;
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    right: 1.4em;
+    transform: translate(50%, -50%) rotate(45deg);
+    width: 6px;
+    height: 6px;
+    border-bottom: 3px solid #fff;
+    border-right: 3px solid #fff;
+}
+.teacher select {
+    width: 100%;
+    font-size: 20px;
+    appearance: none;
+    min-width: 230px;
+    height: 2.8em;
+    padding: .4em 3.6em .4em .8em;
+    border: none;
+    border-radius: 3px;
+    background-color: #e6edf3;
+    color: #333;
+    font-size: 1em;
+    cursor: pointer;
+}
+.teacher select:focus {
+    outline: 2px solid #2589d0;
+}
+
+.btn-submit{
+    font-size: 20px;
+    width: 20%;
+    background-color:#e6edf3;
+    border-radius: 10px;
+    border: 2px solid #2589d0;
+}
+
+table{
+    margin: 0 auto;
+    width: 50%;
+    border-collapse:separate;
+    border-spacing: 0;
+}
+
+table th:first-child{
+    border-radius: 5px 0 0 0;
+}
+
+table th:last-child{
+    border-radius: 0 5px 0 0;
+    border-right: 1px solid #3c6690;
+}
+
+table th{
+    text-align: center;
+    color:white;
+    background: linear-gradient(#829ebc,#225588);
+    border-left: 1px solid #3c6690;
+    border-top: 1px solid #3c6690;
+    border-bottom: 1px solid #3c6690;
+    box-shadow: 0px 1px 1px rgba(255,255,255,0.3) inset;
+    width: 25%;
+    padding: 10px 0;
+}
+
+table td{
+    text-align: center;
+    border-left: 1px solid #a8b7c5;
+    border-bottom: 1px solid #a8b7c5;
+    border-top:none;
+    box-shadow: 0px -3px 5px 1px #eee inset;
+    width: 25%;
+    padding: 10px 0;
+}
+
+table td:last-child{
+    border-right: 1px solid #a8b7c5;
+}
+
+table tr:last-child td:first-child {
+    border-radius: 0 0 0 5px;
+}

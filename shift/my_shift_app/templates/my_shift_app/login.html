@@ -1,33 +1,42 @@
 <!DOCTYPE html>
-{% extends "my_shift_app/base_generic.html" %}
 <html>
     <head>
         <meta charset="utf-8">
-        <title>シフト作成</title>
+        <title>ログイン画面</title>
         {% load static %}
         <link rel="stylesheet" href="{% static 'my_shift_app/login_style.css' %}">
     </head>
+
     <body>
-
-    {% block content %}
-        <h1>ログイン画面</h1>
-
+        <h1 class = "title">ログイン画面</h1>
+        {% block content %}
+        
         <div class="reg">
-            <form method="post" action="{% url 'my_shift_app:login' %}">
-            {% csrf_token %}
 
-            <table class="reg_form">
+            <form method="post" action="{% url 'my_shift_app:login' %}">
+                {% csrf_token %}
+                
+                <div class="user">
+                    ユーザーID<br>
+                    <input type="text" name="userid" class="userid">
+                </div>
+                <div class="pass">
+                    パスワード<br>
+                    <input type="password" name="password" class="password">
+                </div>
+            <!-- <table class="reg_form">
                 <tr>
-                    <td><label for="userid">ユーザーID:</label></td>
+                    <td><label for="userid" class="name">ユーザーID:</label></td>
                     <td><input type="text" name="userid"></td>
                     <td><label for="password">パスワード：</label></td>
                     <td><input type="password" name="password"></td>
                 </tr>
-                </table>
+                </table> -->
 
                 <input type="submit" class="btn" value="Login">
             </form>
+        {% endblock %}
         </div>
-    {% endblock %}
+    
     </body>
 </html>
