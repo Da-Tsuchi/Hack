@@ -222,18 +222,40 @@ def shift_teacher(request):
     schedulesFirst = []
     schedulesSecond = []
     TeacherRequest = []
+    # シフトに入れる人の中で生徒担当が多い人を選ぶアルゴリズム
     cnt_list = []
     for day in range(1, calendar.monthrange(int(year), int(month))[1] + 1):
         schedulesFirst.append(list(StudentFirstSchedule.objects.filter(year=year, month=month, day=day).values_list('student', flat=True))) 
         schedulesSecond.append(list(StudentSecondSchedule.objects.filter(year=year, month=month, day=day).values_list('student', flat=True)))
         TeacherRequest.append(list(TeacherSchedule.objects.filter(year=year, month=month, day=day).values_list('teacher', flat=True)))
         cnt_list.append(teacher_decision(year, month, day))
-    print(cnt_list)
+    # print(cnt_list)
     print(TeacherRequest)
+    
+    teacher_num_cnt = []
+    print(cnt_list)
+    for day in cnt_list:
+        # print(day)
+        sorted_cnt_list = sorted(day.items(), key=lambda item: item[1])
+        teacher_numbers = [item[0] for item in sorted_cnt_list]
+        teacher_numbers.reverse()
+        teacher_num_cnt.append(teacher_numbers)
+    print(teacher_num_cnt)
 
+    t  = list(zip(TeacherRequest,teacher_num_cnt))
+
+    matched_t = []
+    unmatched_t =[]
+
+    for teacher_request,cnt_by_day in t:
+        matched_teachers = [t for t in teacher_request if t in cnt_by_day]
+        unmatched_teachers = [t for t in teacher_request if t not in matched_teachers]
+        matched_t.append(matched_teachers)
+        unmatched_t.append(unmatched_teachers)
+    
     # zipがHTMLで使えないので、リストに変換
-    schedule = list(zip(days,weekday, TeacherRequest,schedulesFirst, schedulesSecond))
-
+    schedule = list(zip(days,weekday,matched_t ,unmatched_t,schedulesFirst, schedulesSecond))
+    
     context = {
         'year': year,
         'month': month,
@@ -241,6 +263,9 @@ def shift_teacher(request):
         "students": students,
         "teachers": teachers,
         "schedule": schedule,
+        # その他のコンテキスト変数...
+        'matched_t': matched_t,
+        'unmatched_t': unmatched_t,
     }
 
     if request.method == 'POST':
@@ -253,10 +278,54 @@ def shift_teacher(request):
                 for value in values:
                     teacher_number = value
                     if teacher_number:
-                        teacher = teacher.objects.get(teacher_number=teacher_number)
+                        teacher = Teacher.objects.get(teacher_number=teacher_number)
                         # teacher_schedule = TeacherSchedule(year =year,month=month,day =day, student=student)
                         # teacher_schedule.save()
                     
-                    return redirect('my_shift_app:shift_table')
+                    return redirect('my_shift_app:shift_confirm')
     
     return render(request, 'my_shift_app/shift_teacher.html', context)
+
+def shift_confirm(request):
+    year = request.session.get('year')
+    month = request.session.get('month')
+    days_with_weekday = get_days_with_weekday(year, month)
+    students = Student.objects.all()
+    teachers = Teacher.objects.all()
+    
+    days =[]
+    weekday=[]
+    for n in range(0, calendar.monthrange(int(year), int(month))[1] ):
+        days.append(days_with_weekday[n][0])
+        weekday.append(days_with_weekday[n][1])
+        
+    schedulesFirst = []
+    schedulesSecond = []
+    TeacherRequest = []
+    # シフトに入れる人の中で生徒担当が多い人を選ぶアルゴリズム
+    cnt_list = []
+    for day in range(1, calendar.monthrange(int(year), int(month))[1] + 1):
+        schedulesFirst.append(list(StudentFirstSchedule.objects.filter(year=year, month=month, day=day).values_list('student', flat=True))) 
+        schedulesSecond.append(list(StudentSecondSchedule.objects.filter(year=year, month=month, day=day).values_list('student', flat=True)))
+        TeacherRequest.append(list(TeacherSchedule.objects.filter(year=year, month=month, day=day).values_list('teacher', flat=True)))
+        cnt_list.append(teacher_decision(year, month, day))
+    # print(cnt_list)
+    print(TeacherRequest)
+    
+
+    
+    # zipがHTMLで使えないので、リストに変換
+    schedule = list(zip(days,weekday,schedulesFirst, schedulesSecond))
+    
+    context = {
+        'year': year,
+        'month': month,
+        "days_with_weekday": days_with_weekday,
+        "students": students,
+        "teachers": teachers,
+        "schedule": schedule,
+        # その他のコンテキスト変数...
+        # 'matched_t': matched_t,
+        # 'unmatched_t': unmatched_t,
+    }
+    return render(request, 'my_shift_app/shift_confirm.html',context)
