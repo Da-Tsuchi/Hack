@@ -3,15 +3,38 @@
 <head>
     <meta charset="utf-8">
     <title>シフト作成</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'my_shift_app/index_style.css' %}">
+</head>
 <body>
     <form method="post" target="_blank">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">日にちを表示</button>
+        <div class="year">
+            Year<br>
+            <label for="{{ form.year.id_for_label }}">
+                <div>
+                    {{ form.year }}
+                </div>
+            </label>
+        </div>
+
+        <div class="month">
+            Moth<br>
+            <label for="{{ form.month.id_for_label }}">
+                <div>
+                    {{ form.month }}
+                </div>
+            </label>
+        </div>
+
+        <div >
+            <button type="submit" class = "btn-submit">日にちを表示</button>
+        </div>
+        
 
         {% block content %}
         <!-- ログインボタン -->
-        <a href="{% url 'my_shift_app:login' %}" class="btn btn-primary">管理者としてログイン</a>
+        <a href="{% url 'my_shift_app:login' %}" class="btn-primary">管理者としてログイン</a>
         {% endblock %}
     </form>
 </body>
