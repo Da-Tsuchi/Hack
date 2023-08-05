@@ -1,6 +1,60 @@
 body{
     text-align: center;
 }
+
+.teacher{
+    margin:0 auto;
+    margin-bottom: 20px;
+    width: 20%;
+}
+
+.teacher label{
+    position: relative;
+    width: 20%;
+}
+
+.teacher label  ::before {
+    position: absolute;
+    content: '';
+    pointer-events: none;
+    display: inline-block;
+    right: 0;
+    width: 2.8em;
+    height: 2.8em;
+    border-radius: 0 3px 3px 0;
+    background-color: #2589d0;
+}
+.teacher label ::after {
+    position: absolute;
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    right: 1.4em;
+    transform: translate(50%, -50%) rotate(45deg);
+    width: 6px;
+    height: 6px;
+    border-bottom: 3px solid #fff;
+    border-right: 3px solid #fff;
+}
+.teacher select {
+    width: 100%;
+    font-size: 20px;
+    appearance: none;
+    min-width: 230px;
+    height: 2.8em;
+    padding: .4em 3.6em .4em .8em;
+    border: none;
+    border-radius: 3px;
+    background-color: #e6edf3;
+    color: #333;
+    font-size: 1em;
+    cursor: pointer;
+}
+.teacher select:focus {
+    outline: 2px solid #2589d0;
+}
+
 table{
     margin: 0 auto;
     width: 50%;
@@ -45,4 +99,12 @@ table td:last-child{
 
 table tr:last-child td:first-child {
     border-radius: 0 0 0 5px;
+}
+
+.saturday{
+    background-color: rgb(175, 238, 238);
+}
+
+.sunday{
+    background-color:rgb(255, 99, 71);
 }

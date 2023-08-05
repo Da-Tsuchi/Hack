@@ -1,11 +1,35 @@
-{% extends "my_shift_app/base_generic.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>シフト作成</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'my_shift_app/shift_manage_style.css' %}">
 
-{% block content %}
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">この設定でシフトを作成</button>
-</form>
+</head>
 
+<body>
+    <form method="post" target="_blank">
+        {% csrf_token %}
+        <div class="year">
+            Year<br>
+            <label for="{{ form.year.id_for_label }}">
+                <div>
+                    {{ form.year }}
+                </div>
+            </label>
+        </div>
 
-{% endblock %}
+        <div class="month">
+            Moth<br>
+            <label for="{{ form.month.id_for_label }}">
+                <div>
+                    {{ form.month }}
+                </div>
+            </label>
+        </div>
+
+        <button type="submit" class = "btn-submit">この設定でシフトを作成</button>
+    </form>
+</body>
+</html>
