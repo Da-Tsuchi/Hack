@@ -4,11 +4,10 @@ body{
 
 table{
     margin: 0 auto;
-    max-height: 500px;
     width: 50%;
-    height: 50%;
     border-collapse:separate;
     border-spacing: 0;
+    table-layout: fixed;
 }
 
 table th:first-child{
@@ -56,10 +55,6 @@ table tr:last-child td:first-child {
 
 .sunday{
     background-color:rgb(255, 99, 71);
-}
-
-select{
-    padding:auto;
 }
 
 .btn-submit{

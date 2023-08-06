@@ -1,4 +1,13 @@
-{% extends "my_shift_app/base_generic.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>シフト作成</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'my_shift_app/shift_teacher_style.css' %}">
+</head>
+
+<body>
 {% load dict_helper %}
 
 {% block content %}
@@ -7,6 +16,7 @@
 <form action ="" method="POST">
     {% csrf_token %}
     <table>
+        
         <tr>
             <th>日</th>
             <th>曜日</th>
@@ -16,7 +26,13 @@
         </tr>
 
         {% for day,weekday,matched_teachers,unmatched_teachers,student_first,student_second in schedule %}
-        <tr>
+        {% if weekday == "土" %}
+            <tr class="saturday">
+        {% elif weekday == "日" %}
+            <tr class="sunday">
+        {% else %}
+            <tr>
+        {% endif %}
             <td>{{ day }}</td>
             <td>{{ weekday }}</td>
             <td class="selectContainer">
@@ -66,7 +82,7 @@
         </tr>
         {% endfor %}
     </table>
-    <input type="submit" value="確認画面へ">
+    <input type="submit" class="btn-submit" value="確認画面へ">
 </form>
 
 <script>
@@ -104,3 +120,5 @@
 </script>
 
 {% endblock %}
+</body>
+</html>

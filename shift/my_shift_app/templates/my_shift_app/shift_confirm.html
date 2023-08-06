@@ -1,5 +1,13 @@
-{% extends "my_shift_app/base_generic.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>シフト作成</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'my_shift_app/shift_confirm_style.css' %}">
+</head>
 
+<body>
 {% block content %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <h1>{{ year }}年{{ month }}月のシフト表</h1>
@@ -15,7 +23,13 @@
         </tr>
 
         {% for day,weekday,student_first,student_second in schedule %}
+        {% if weekday == "土" %}
+        <tr class="saturday">
+        {% elif weekday == "日" %}
+        <tr class="sunday">
+        {% else %}
         <tr>
+        {% endif %}
             <td>{{ day }}</td>
             <td>{{ weekday }}</td>
             <td>
@@ -42,7 +56,10 @@
         </tr>
         {% endfor %}
     </table>
-    <input type="submit" value="保存">
+    <input type="submit" class="btn-submit" value="保存">
 </form>
 
 {% endblock %}
+
+</body>
+</html>
