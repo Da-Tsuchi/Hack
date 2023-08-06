@@ -31,37 +31,38 @@ def index(request):
     }
     return render(request, 'my_shift_app/index.html',context)
 
-def table(request):
+def table(request):   
     year = request.session.get('year')
-    month = request.session.get('month')
-    form = TeacherRequestForm(request.POST)
-        
+    month = request.session.get('month')  
+        # If the year and month data is in session
+    days_with_weekday = get_days_with_weekday(year, month)   
     if request.method == 'POST':
+        form = TeacherRequestForm(request.POST)
+
+        print(request.POST)
         print(form.errors)
-        
         if form.is_valid():
             selected_teacher = form.cleaned_data['teacher']
+            year = form.cleaned_data['year']
+            month = form.cleaned_data['month']
             print(selected_teacher)
 
-            for key, value in request.POST.items():
-                print(key, value)
-                if "_shift" in key and value == "OK":
-                    # dayをキーから抽出します
-                    day = int(key.split("_")[0])
-                    teachershedule=TeacherSchedule.objects.create(year=year, month=month, day=day, teacher=selected_teacher)
-                    print(teachershedule)
-                    
+            for day, _ in days_with_weekday:
+                shift_status = request.POST.get(f'{day}_shift')
+                print(shift_status)
+                if shift_status == 'OK':
+                    TeacherSchedule.objects.create(year=year, month=month, day=day, teacher=selected_teacher)
+                        
             return redirect('my_shift_app:index')  # 適切なリダイレクト先へ変更
             # 他の処理
             
     else:
-        print(form.errors)
         form = TeacherRequestForm()
+        
 
     teacherRequests = TeacherSchedule.objects.all()
                     
-    # If the year and month data is in session
-    days_with_weekday = get_days_with_weekday(year, month)
+
     return render(request, 'my_shift_app/table.html', {'days_with_weekday': days_with_weekday,"year":year,"month":month, 'form': form, 'teacherRequests': teacherRequests})
 
 
@@ -101,8 +102,10 @@ def manage(request):
 def teacher(request):
     # 先生情報の登録処理...
     if request.method == 'POST':
+        print(request.POST)
         form = TeacherForm(request.POST)
         if form.is_valid():
+            print(form.cleaned_data)
             form.save()
             return redirect('my_shift_app:teacher')
     else:

@@ -11,7 +11,7 @@
     <h1>{{year}}年 {{month}}月のシフト計画</h1>
 
 
-    <form method="POST">
+<form method="POST">
         {% csrf_token %}
         <div class = teacher>
             講師<br>
@@ -21,7 +21,8 @@
                 </div>
             </label>
         </div>
-  
+        <input type="hidden" name="year" value="{{ year }}" />
+        <input type="hidden" name="month" value="{{ month }}" />
 <table>
     <tr>
         <th>日にち</th>
@@ -29,30 +30,30 @@
         <th>講師</th>
     </tr>
         <div class="teacher">
+            
         {% for day, weekday in days_with_weekday %}
-        {% if weekday == "土" %}
-            <tr class="saturday">
-        {% elif weekday == "日" %}
-            <tr class="sunday">
-        {% else %}
-            <tr>
-        {% endif %}
-            <td>{{ year }}</td>
-            <td>{{ weekday }}</td>
-            <td>
-                <div id="teacher_container{{ forloop.counter }}">
-                    <!-- Here the select boxes will be appended -->
-                </div>
-                <input type="radio" id="OK" name="{{ day }}_shift" value="OK" checked>出勤可
-                <input type="radio" id="NO" name="{{ day }}_shift" value="NO">出勤不可
-                <!-- <button class="addTeacher" id="addTeacher{{ forloop.counter }}">講師追加</button> -->
+            {% if weekday == "土" %}
+                <tr class="saturday">
+            {% elif weekday == "日" %}
+                <tr class="sunday">
+            {% else %}
+                <tr>
+            {% endif %}
+                <td>{{ day }}<input type="hidden" name="day" value="{{ day }}" </td>
+                <td>{{ weekday }}</td>
+                <td>
+                    <div id="teacher_container{{ forloop.counter }}">
+                        <!-- Here the select boxes will be appended -->
+                    </div>
+                    <input type="radio" id="OK" name="{{ day }}_shift" value="OK" checked>出勤可
+                    <input type="radio" id="NO" name="{{ day }}_shift" value="NO">出勤不可
+                    <!-- <button class="addTeacher" id="addTeacher{{ forloop.counter }}">講師追加</button> -->
+                    <!-- <input type="hidden" name="{{ day }}_day" value="{{ day }}" /> -->
             </td>
         </tr>
         {% endfor %}
     </div>
-    {{ form.year.as_hidden }}
-    {{ form.month.as_hidden }}
-    {{ form.day.as_hidden }}
+    
 
 </table>
 <input type="submit" value="シフト希望表を提出"><br>

@@ -13,11 +13,11 @@ class TeacherNameChoiceField(forms.ModelChoiceField):
         return obj.name
 
 class TeacherForm(forms.ModelForm):
-    teacher_name = TeacherNameChoiceField(queryset=Teacher.objects.all(), to_field_name="teacher_number")
+    # teacher_name = TeacherNameChoiceField(queryset=Teacher.objects.all(), to_field_name="teacher_number")
 
     class Meta:
         model = Teacher
-        fields = ['teacher_number', 'name', 'teacher_name']  # フォームにteacher_numberフィールドを追加
+        fields = ['teacher_number', 'name']  # フォームにteacher_numberフィールドを追加
 
 class StudentForm(forms.ModelForm):
     teacher = TeacherNameChoiceField(queryset=Teacher.objects.all(), to_field_name="teacher_number")
@@ -60,8 +60,8 @@ class ShiftForm(forms.Form):
         self.fields['student_second'].choices = [(shift.student_second.id, shift.student_second.name) for shift in shifts_second]
         
 class TeacherRequestForm(forms.ModelForm):
-    teacher_name = TeacherNameChoiceField(queryset=Teacher.objects.all(), to_field_name="teacher_number")
+    teacher = TeacherNameChoiceField(queryset=Teacher.objects.all(), to_field_name="teacher_number")
     
     class Meta:
         model = TeacherSchedule
-        fields = ['teacher', 'year', 'month', 'day',"teacher_name"]  # フォームにteacher_numberフィールドを追加
+        fields = ['teacher', 'year', 'month', 'day']  # フォームにteacher_numberフィールドを追加
