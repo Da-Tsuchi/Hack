@@ -34,22 +34,35 @@ def index(request):
 def table(request):
     year = request.session.get('year')
     month = request.session.get('month')
+    form = TeacherRequestForm(request.POST)
+        
     if request.method == 'POST':
-        form = TeacherForm(request.POST)
+        print(form.errors)
+        
         if form.is_valid():
             selected_teacher = form.cleaned_data['teacher']
+            print(selected_teacher)
+
+            for key, value in request.POST.items():
+                print(key, value)
+                if "_shift" in key and value == "OK":
+                    # dayをキーから抽出します
+                    day = int(key.split("_")[0])
+                    teachershedule=TeacherSchedule.objects.create(year=year, month=month, day=day, teacher=selected_teacher)
+                    print(teachershedule)
+                    
+            return redirect('my_shift_app:index')  # 適切なリダイレクト先へ変更
             # 他の処理
+            
     else:
-        form = TeacherForm()
+        print(form.errors)
+        form = TeacherRequestForm()
 
-    teachers = Teacher.objects.all()
-
-    # teachers = list(Teacher.objects.values_list('name', flat=True))
-    # students = list(Student.objects.values_list('name', flat=True))
+    teacherRequests = TeacherSchedule.objects.all()
                     
     # If the year and month data is in session
     days_with_weekday = get_days_with_weekday(year, month)
-    return render(request, 'my_shift_app/table.html', {'days_with_weekday': days_with_weekday,"year":year,"month":month, 'form': form, 'teachers': teachers})
+    return render(request, 'my_shift_app/table.html', {'days_with_weekday': days_with_weekday,"year":year,"month":month, 'form': form, 'teacherRequests': teacherRequests})
 
 
 def Login(request):
