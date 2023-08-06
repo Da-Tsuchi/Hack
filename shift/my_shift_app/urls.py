@@ -19,4 +19,5 @@ urlpatterns = [
     path('shift_table/', views.shift_table, name='shift_table'),
     path('shift_teacher/', views.shift_teacher, name='shift_teacher'),
     path('shift_confirm/', views.shift_confirm, name='shift_confirm'),
+    path('shift_pdf/', views.shift_pdf, name='shift_pdf'),
 ]

@@ -22,7 +22,7 @@
             <th>後半生徒</th>
         </tr>
 
-        {% for day,weekday,student_first,student_second in schedule %}
+        {% for day,weekday,teacher_by_day,student_first,student_second in schedule %}
         {% if weekday == "土" %}
         <tr class="saturday">
         {% elif weekday == "日" %}
@@ -33,7 +33,9 @@
             <td>{{ day }}</td>
             <td>{{ weekday }}</td>
             <td>
-                {{講師}}
+                {% for teacher in teacher_by_day %}
+                            {{ teacher }}
+                {% endfor %}
             </td>
             <td>
                 {% for student_number in student_first %}
@@ -58,7 +60,7 @@
     </table>
     <input type="submit" class="btn-submit" value="保存">
 </form>
-
+<a href="{% url 'my_shift_app:shift_teacher' %}">講師選択に戻る</a>
 {% endblock %}
 
 </body>

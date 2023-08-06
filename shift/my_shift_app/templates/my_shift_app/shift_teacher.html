@@ -44,7 +44,7 @@
                             {% endif %}
                         {% endfor %}
                     {% endfor %}
-
+                    <option value="">先生なし</option>
                     {% for teacher_req in unmatched_teachers %}
                         {% for teacher in teachers %}
                             {% if teacher.teacher_number == teacher_req %}
@@ -53,7 +53,7 @@
                         {% endfor %}
                     {% endfor %}
 
-                    <option value="">先生なし</option>
+                    
                 </select>
                 <div class="buttons">
                     <button class="addButton">追加</button>

@@ -10,6 +10,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from calendar import monthrange
 from .teacher_decision import *
+# from django.template.loader import render_to_string
+# from weasyprint import HTML
 import csv
 
 def index(request):
@@ -296,21 +298,21 @@ def shift_teacher(request):
     }
 
     if request.method == 'POST':
+        selected_teachers_for_days = {}  # This will hold day as key and selected teachers as value
+
         for key, values in request.POST.lists():
             if key.startswith('teacher_'):
-                print(key, values)
                 day = key.replace('teacher_', '').replace('[]', '')
                 if len(values) != len(set(values)):
                     return HttpResponse('同じ先生を同じ日に複数回選ぶことはできません。', status=400)
-                for value in values:
-                    teacher_number = value
-                    if teacher_number:
-                        teacher = Teacher.objects.get(teacher_number=teacher_number)
-                        # teacher_schedule = TeacherSchedule(year =year,month=month,day =day, student=student)
-                        # teacher_schedule.save()
-                    
-                    return redirect('my_shift_app:shift_confirm')
-    
+
+                selected_teachers_for_days[day] = values
+
+        # セッションに選択された教師番号を保存
+        request.session['selected_teachers_for_days'] = selected_teachers_for_days
+
+        return redirect('my_shift_app:shift_confirm')
+
     return render(request, 'my_shift_app/shift_teacher.html', context)
 
 def shift_confirm(request):
@@ -339,10 +341,20 @@ def shift_confirm(request):
     # print(cnt_list)
     print(TeacherRequest)
     
-
+    selected_teachers_for_days = request.session.get('selected_teachers_for_days', {})
+    print(selected_teachers_for_days)
+    
+    teacher_names_for_days = []
+    for day, teacher_numbers in selected_teachers_for_days.items():
+        print(teacher_numbers)
+        if(teacher_numbers == [""]):
+            teacher_names = [""]
+        else:
+            teacher_names = [Teacher.objects.get(teacher_number=tn).name for tn in teacher_numbers]
+        teacher_names_for_days.append(teacher_names)
     
     # zipがHTMLで使えないので、リストに変換
-    schedule = list(zip(days,weekday,schedulesFirst, schedulesSecond))
+    schedule = list(zip(days,weekday,teacher_names_for_days,schedulesFirst, schedulesSecond))
     
     context = {
         'year': year,
@@ -351,8 +363,88 @@ def shift_confirm(request):
         "students": students,
         "teachers": teachers,
         "schedule": schedule,
-        # その他のコンテキスト変数...
-        # 'matched_t': matched_t,
-        # 'unmatched_t': unmatched_t,
+        'teacher_names_for_days': teacher_names_for_days,
     }
+    
     return render(request, 'my_shift_app/shift_confirm.html',context)
+
+def shift_pdf(request):
+    year = request.session.get('year')
+    month = request.session.get('month')
+    days_with_weekday = get_days_with_weekday(year, month)
+    students = Student.objects.all()
+    teachers = Teacher.objects.all()
+    
+    days =[]
+    weekday=[]
+    for n in range(0, calendar.monthrange(int(year), int(month))[1] ):
+        days.append(days_with_weekday[n][0])
+        weekday.append(days_with_weekday[n][1])
+        
+    schedulesFirst = []
+    schedulesSecond = []
+    TeacherRequest = []
+    # シフトに入れる人の中で生徒担当が多い人を選ぶアルゴリズム
+    cnt_list = []
+    for day in range(1, calendar.monthrange(int(year), int(month))[1] + 1):
+        schedulesFirst.append(list(StudentFirstSchedule.objects.filter(year=year, month=month, day=day).values_list('student', flat=True))) 
+        schedulesSecond.append(list(StudentSecondSchedule.objects.filter(year=year, month=month, day=day).values_list('student', flat=True)))
+        TeacherRequest.append(list(TeacherSchedule.objects.filter(year=year, month=month, day=day).values_list('teacher', flat=True)))
+        cnt_list.append(teacher_decision(year, month, day))
+    # print(cnt_list)
+    print(TeacherRequest)
+    
+    selected_teachers_for_days = request.session.get('selected_teachers_for_days', {})
+    print(selected_teachers_for_days)
+    
+    teacher_names_for_days = []
+    for day, teacher_numbers in selected_teachers_for_days.items():
+        print(teacher_numbers)
+        if(teacher_numbers == [""]):
+            teacher_names = [""]
+        else:
+            teacher_names = [Teacher.objects.get(teacher_number=tn).name for tn in teacher_numbers]
+        teacher_names_for_days.append(teacher_names)
+    
+    # zipがHTMLで使えないので、リストに変換
+    schedule = list(zip(days,weekday,teacher_names_for_days,schedulesFirst, schedulesSecond))
+    
+    context = {
+        'year': year,
+        'month': month,
+        "days_with_weekday": days_with_weekday,
+        "students": students,
+        "teachers": teachers,
+        "schedule": schedule,
+        'teacher_names_for_days': teacher_names_for_days,
+    }
+    
+    # この部分でHTMLテンプレートを文字列としてレンダリング
+    year = request.session.get('year')
+    month = request.session.get('month')
+    days_with_weekday = get_days_with_weekday(year, month)
+    students = Student.objects.all()
+    teachers = Teacher.objects.all()
+
+    # ... 以下、shift_confirmの中のcontext生成ロジックをコピー ...
+
+    context = {
+        'year': year,
+        'month': month,
+        "days_with_weekday": days_with_weekday,
+        "students": students,
+        "teachers": teachers,
+        "schedule": schedule,
+        'teacher_names_for_days': teacher_names_for_days,
+    }
+    
+    html_string = render_to_string('my_shift_app/shift_confirm.html',context)
+
+    # WeasyPrintを使用してPDFを生成
+    html = HTML(string=html_string)
+    pdf_file = html.write_pdf()
+
+    # PDFをHTTPレスポンスとして返す
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="report.pdf"'
+    return response
