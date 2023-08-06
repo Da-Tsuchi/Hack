@@ -258,7 +258,7 @@ def shift_teacher(request):
     print(TeacherRequest)
     
     teacher_num_cnt = []
-    print(cnt_list)
+    # print(cnt_list)
     for day in cnt_list:
         # print(day)
         sorted_cnt_list = sorted(day.items(), key=lambda item: item[1])
@@ -273,11 +273,13 @@ def shift_teacher(request):
     unmatched_t =[]
 
     for teacher_request,cnt_by_day in t:
-        matched_teachers = [t for t in teacher_request if t in cnt_by_day]
+        matched_teachers = [t for t in cnt_by_day if t in teacher_request]
         unmatched_teachers = [t for t in teacher_request if t not in matched_teachers]
         matched_t.append(matched_teachers)
         unmatched_t.append(unmatched_teachers)
     
+    print(matched_t)
+    print(unmatched_t)
     # zipがHTMLで使えないので、リストに変換
     schedule = list(zip(days,weekday,matched_t ,unmatched_t,schedulesFirst, schedulesSecond))
     
