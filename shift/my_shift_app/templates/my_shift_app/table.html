@@ -15,48 +15,48 @@
         {% csrf_token %}
         <div class = teacher>
             講師<br>
-            <label for="{{ form.teacher_name.id_for_label }}">
+            <label for="{{ form.teacher.id_for_label }}">
                 <div>
-                    {{ form.teacher_name }}
+                    {{ form.teacher }}
                 </div>
             </label>
         </div>
-    </form>
-
-    <!-- <select name="teacher" id="teacher{{ forloop.counter }}">
-        <option value="">講師を選択してください</option>
-        {% for teacher in teachers %}
-            <option value="{{ teacher.teacher_number }}">{{ teacher.name }}</option>
-        {% endfor %}
-    </select> -->
+  
 <table>
     <tr>
         <th>日にち</th>
         <th>曜日</th>
         <th>講師</th>
     </tr>
+        <div class="teacher">
+        {% for day, weekday in days_with_weekday %}
+        {% if weekday == "土" %}
+            <tr class="saturday">
+        {% elif weekday == "日" %}
+            <tr class="sunday">
+        {% else %}
+            <tr>
+        {% endif %}
+            <td>{{ year }}</td>
+            <td>{{ weekday }}</td>
+            <td>
+                <div id="teacher_container{{ forloop.counter }}">
+                    <!-- Here the select boxes will be appended -->
+                </div>
+                <input type="radio" id="OK" name="{{ day }}_shift" value="OK" checked>出勤可
+                <input type="radio" id="NO" name="{{ day }}_shift" value="NO">出勤不可
+                <!-- <button class="addTeacher" id="addTeacher{{ forloop.counter }}">講師追加</button> -->
+            </td>
+        </tr>
+        {% endfor %}
+    </div>
+    {{ form.year.as_hidden }}
+    {{ form.month.as_hidden }}
+    {{ form.day.as_hidden }}
 
-    {% for day, weekday in days_with_weekday %}
-    {% if weekday == "土" %}
-        <tr class="saturday">
-    {% elif weekday == "日" %}
-        <tr class="sunday">
-    {% else %}
-        <tr>
-    {% endif %}
-        <td>{{ day }}</td>
-        <td>{{ weekday }}</td>
-        <td>
-            <div id="teacher_container{{ forloop.counter }}">
-                <!-- Here the select boxes will be appended -->
-            </div>
-            <input type="radio" id="OK" name="{{ day }}_shift" value="OK" checked>出勤可
-            <input type="radio" id="NO" name="{{ day }}_shift" value="NO">出勤不可
-            <!-- <button class="addTeacher" id="addTeacher{{ forloop.counter }}">講師追加</button> -->
-        </td>
-    </tr>
-    {% endfor %}
 </table>
+<input type="submit" value="シフト希望表を提出"><br>
 <a href="{% url 'my_shift_app:index' %}">年月選択画面に戻る</a>
+</form>
 </body>
 </html>
