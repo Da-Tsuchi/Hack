@@ -17,11 +17,11 @@
 | Koshiro Itaya | https://github.com/itaya0320 | 要件定義・フロントエンド（css,javascript）
 
 ## 使用した技術
-<style>
+<!-- <style>
 .table2 > table, .table2 > th, .table2 > td {
    font-size: 120%;
 }
-</style>
+</style> -->
 
 <div class="table2">
 
@@ -45,7 +45,8 @@
 <img src="img/teacher_request.gif" width="70%">
 
 ### 生徒の希望日程の登録
-- <img src="img/student_schedule.gif" width="70%">
+- 候補の講師リストから選択する
+<img src="img/student_schedule.gif" width="70%">
 ### シフト作成
 ### 講師割り当て最適化
 
