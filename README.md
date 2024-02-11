@@ -1,6 +1,6 @@
-# シフトマネジメント
+<img src="img/linkedin_banner_image_1.png">
 
-## アプリ概要
+## Shift Management 概要
 初めてのチーム開発(技育CAMPハッカソンVol7)で作成したWebアプリ  
 
 ## 開発背景
