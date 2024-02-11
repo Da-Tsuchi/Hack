@@ -1,4 +1,15 @@
-<img src="img/linkedin_banner_image_1.png">
+<p align="center">
+   <img src="img/linkedin_banner_image_1.png" width=50%>
+</p>
+<p align="center">
+   <img src="https://img.shields.io/badge/-HTML5-333.svg?logo=html5&style=flat" />  
+   <img src="https://img.shields.io/badge/-CSS3-1572B6.svg?logo=css3&style=flat" />
+   <img src="https://img.shields.io/badge/Javascript-276DC3.svg?logo=javascript&style=flat" />
+   <img src="https://img.shields.io/badge/-Python-F9DC3E.svg?logo=python&style=flat" />
+   <img src="https://img.shields.io/badge/-Django-yellow.svg?logo=Django&style=flat" />
+   <img src="https://img.shields.io/badge/-MySQL-000000.svg?logo=mysql&style=flat">
+   <img src="https://img.shields.io/badge/-GitHub-181717.svg?logo=github&style=flat" />
+</p>
 
 ## Shift Management 概要
 初めてのチーム開発(技育CAMPハッカソンVol7)で作成したWebアプリ  
@@ -47,8 +58,11 @@
 ### 生徒の希望日程の登録
 - 候補の講師リストから選択する
 <img src="img/student_schedule.gif" width="70%">
+
 ### シフト作成
+ 
 ### 講師割り当て最適化
+ 
 
 
 
